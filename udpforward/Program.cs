@@ -7,16 +7,42 @@ namespace udpforward
 {
     internal class Program
     {
+        const string PROGRAM_NAME = "udpforwarder";
+        const string VERSION = "1.0";
+
         static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args)
                .WithParsed(o =>
                {
-                   var destinationIPs = Utils.RangeUtils.ExtractIPs(o.DestinationIPs).ToList();
-                   var ports = Utils.RangeUtils.ExtractPorts(o.Ports).ToList();
+                   if (o.PrintVersion)
+                   {
+                       Log($"{PROGRAM_NAME} {VERSION}");
+                       Environment.Exit(0);
+                   }
 
-                   var session = new Session(o.ListenIP, o.ForwarderIP, destinationIPs, ports);
-                   session.Start();
+                   var forwarders = o
+                                    .Forwards
+                                    .Select(forward =>
+                                    {
+                                        var tokens = forward.Split(' ');
+
+                                        Forwarder forwarder;
+                                        if (tokens.Length == 2)
+                                        {
+                                            forwarder = new Forwarder(tokens[0], null, tokens[1]);
+                                        }
+                                        else
+                                        {
+                                            forwarder = new Forwarder(tokens[0], tokens[1], tokens[2]);
+                                        }
+
+                                        return forwarder;
+                                    })
+                                    .ToList();
+
+                   forwarders
+                    .ForEach(f => f.Start());
 
                    while (true)
                    {

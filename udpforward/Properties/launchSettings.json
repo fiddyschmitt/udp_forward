@@ -2,7 +2,7 @@
   "profiles": {
     "udpforward": {
       "commandName": "Project",
-      "commandLineArgs": "--listen 192.168.56.1 --forwarder 192.168.1.31 --destinations 192.168.1.7 --ports 11300-11305"
+      "commandLineArgs": "--forward \"192.168.56.1:11300 192.168.56.120:11305\""
     }
   }
 }

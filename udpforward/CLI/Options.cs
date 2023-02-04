@@ -11,16 +11,14 @@ namespace udpforward.CLI
 {
     public class Options
     {
-        [Option('l', "listen", Required = true, HelpText = "The local IP on which to listen for UDP data. Example --listen 127.0.0.1")]
-        public string ListenIP { get; set; }
+        [Option('v', "version", Required = false, HelpText = "Print the version and exit.")]
+        public bool PrintVersion { get; set; }
 
-        [Option('f', "forwarder", Required = false, HelpText = "The local IP from which to send data to the destination. Example --forwarder 192.168.1.1")]
-        public string ForwarderIP { get; set; }
-
-        [Option('d', "destinations", Required = true, HelpText = "A list of remote IPs to forward the data to. Example --destinations 192.168.1.10-20")]
-        public string DestinationIPs { get; set; }
-
-        [Option('p', "ports", Required = true, HelpText = "The ports to listen and forward. Example --ports 11000-11050")]
-        public string Ports { get; set; }
+        [Option('f', "forward", Required = true, HelpText = "local [forwarder] remote\n" +
+            "    local = The local endpoint on which to listen for UDP data.\n" +
+            "    forwarder = The local endpoint from which to send data to the destination.\n" +
+            "    remote = The remote endpoint to forward the data to.\n\n" +
+            "Example -f \"127.0.0.1:11000 192.168.1.1:15000 192.168.1.20:11000\"")]
+        public IEnumerable<string> Forwards { get; set; } = new List<string>();
     }
 }
