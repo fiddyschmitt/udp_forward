@@ -49,20 +49,28 @@ namespace udpforward
                                     Program.Log($"Created listener: {listener.Client.LocalEndPoint}");
 
                                     UdpClient forwarderClient;
-                                    try
+
+                                    if (string.IsNullOrEmpty(ForwarderIP))
                                     {
-                                        var forwarderEndpoint = IPEndPoint.Parse($"{ForwarderIP}:{port}");
-                                        forwarderClient = new UdpClient(forwarderEndpoint)
-                                        {
-                                            EnableBroadcast = true
-                                        };
+                                        forwarderClient = listener;
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        Program.Log($"FATAL. Could not initialise forwarder: {ForwarderIP}");
-                                        Program.Log(ex.ToString());
-                                        Environment.Exit(1);
-                                        throw;
+                                        try
+                                        {
+                                            var forwarderEndpoint = IPEndPoint.Parse($"{ForwarderIP}:{port}");
+                                            forwarderClient = new UdpClient(forwarderEndpoint)
+                                            {
+                                                EnableBroadcast = true
+                                            };
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Program.Log($"FATAL. Could not initialise forwarder: {ForwarderIP}");
+                                            Program.Log(ex.ToString());
+                                            Environment.Exit(1);
+                                            throw;
+                                        }
                                     }
 
                                     var destinations = DestinationIPs

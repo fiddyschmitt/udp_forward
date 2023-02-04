@@ -14,7 +14,7 @@ namespace udpforward.CLI
         [Option('l', "listen", Required = true, HelpText = "The local IP on which to listen for UDP data. Example --listen 127.0.0.1")]
         public string ListenIP { get; set; }
 
-        [Option('f', "forwarder", Required = true, HelpText = "The local IP from which to send data to the destination. Example --forwarder 192.168.1.1")]
+        [Option('f', "forwarder", Required = false, HelpText = "The local IP from which to send data to the destination. Example --forwarder 192.168.1.1")]
         public string ForwarderIP { get; set; }
 
         [Option('d', "destinations", Required = true, HelpText = "A list of remote IPs to forward the data to. Example --destinations 192.168.1.10-20")]
