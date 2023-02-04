@@ -2,7 +2,7 @@
   "profiles": {
     "udpforward": {
       "commandName": "Project",
-      "commandLineArgs": "--forward \"192.168.56.1:11300 192.168.56.120:11305\""
+      "commandLineArgs": "--config \"example.json\""
     }
   }
 }
