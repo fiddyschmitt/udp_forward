@@ -11,7 +11,7 @@ namespace udpforward
     internal class Program
     {
         const string PROGRAM_NAME = "udpforwarder";
-        const string VERSION = "1.1";
+        const string VERSION = "1.2";
 
         static void Main(string[] args)
         {
@@ -20,15 +20,15 @@ namespace udpforward
             {
                 Forwards = new List<ForwardCfg>() {
                     new ForwardCfg() {
-                        Listeners = new List<string>() { "127.0.0.1:5000" },
+                        Listeners = new List<string>() { "127.0.0.1:11300" },
                         Senders = new List<SenderCfg>()
                         {
                             new SenderCfg()
                             {
-                                SenderFromAddress = "192.168.1.1:5000",
+                                SenderFromAddress = "192.168.56.1:11300",
                                 Destinations = new List<string>()
                                 {
-                                    "192.168.1.100:5000"
+                                    "192.168.56.120:11300"
                                 }
                             }
                         }
@@ -37,8 +37,8 @@ namespace udpforward
             };
 
             var json = JsonConvert.SerializeObject(exampleCfg, Formatting.Indented);
-
             */
+
 
             Parser.Default.ParseArguments<Options>(args)
                .WithParsed(o =>

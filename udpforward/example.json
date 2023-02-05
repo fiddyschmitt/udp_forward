@@ -1,15 +1,18 @@
 ﻿{
   "Forwards": [
     {
+      "Bidirectional": true,
       "Listeners": [
         "192.168.56.1:11300"
       ],
       "Senders": [
         {
-          "SenderFromAddress": "192.168.56.1:5000",
-          "Destinations": [
-            "192.168.56.120:11300"
-          ]
+          "SenderFromAddress": "192.168.56.1:11300",
+          "Destinations": [ "192.168.56.120:11300" ]
+        },
+        {
+          "SenderFromAddress": "127.0.0.1:11300",
+          "Destinations": [ "127.0.0.1:5000" ]
         }
       ]
     }

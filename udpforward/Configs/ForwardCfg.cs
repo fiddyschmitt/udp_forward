@@ -10,5 +10,7 @@ namespace udpforward.Configs
     {
         public List<string> Listeners { get; set; } = new();
         public List<SenderCfg> Senders { get; set; } = new();
+
+        public bool Bidirectional = false;
     }
 }

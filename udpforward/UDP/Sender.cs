@@ -11,15 +11,26 @@ namespace udpforward.UDP
 {
     public class Sender
     {
-        public Sender(SenderCfg config)
+        public Sender(SenderCfg config, List<UdpClient> listeners)
         {
-            if (!string.IsNullOrEmpty(config.SenderFromAddress))
+            var sendFrom = IPEndPoint.Parse(config.SenderFromAddress);
+
+            var existingClient = listeners
+                                    .FirstOrDefault(listener => listener.Client.LocalEndPoint.Equals(sendFrom));
+
+            if (existingClient == null)
             {
-                var sendFrom = IPEndPoint.Parse(config.SenderFromAddress);
+                UsedExistingListener = false;
+
                 SendClient = new UdpClient(sendFrom)
                 {
                     EnableBroadcast = true
                 };
+            }
+            else
+            {
+                UsedExistingListener = true;
+                SendClient = existingClient;
             }
 
             Destinations = config
@@ -28,30 +39,31 @@ namespace udpforward.UDP
                                 .ToList();
         }
 
+        public readonly bool UsedExistingListener;
+
         public void Send(string receiveChain, UdpClient receivedBy, byte[] data)
         {
             Destinations
                 .ForEach(dest =>
                 {
                     string str;
-                    if (SendClient == null)
+                    if (UsedExistingListener)
                     {
                         //use the client that received this message, as a sender
-                        str = $"{receiveChain} -> {dest}";
+                        str = $"{receiveChain} -> {dest}     {data.Length:N0} bytes";
                         receivedBy.Send(data, data.Length, dest);
                     }
                     else
                     {
-                        str = $"{receiveChain} -> {SendClient.Client.LocalEndPoint} -> {dest}";
+                        str = $"{receiveChain} -> {SendClient.Client.LocalEndPoint} -> {dest}    {data.Length:N0} bytes";
                         SendClient.Send(data, data.Length, dest);
                     }
 
                     Program.Log(str);
-
                 });
         }
 
-        public UdpClient? SendClient;
+        public UdpClient SendClient;
         public List<IPEndPoint> Destinations;
     }
 }
