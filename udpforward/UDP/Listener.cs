@@ -16,9 +16,24 @@ namespace udpforward.UDP
             Listeners = config
                             .Listeners
                             .Select(listenEndpointStr => IPEndPoint.Parse(listenEndpointStr))
-                            .Select(listenEndpoint => new UdpClient(listenEndpoint)
+                            .Select(listenEndpoint =>
                             {
-                                EnableBroadcast = true
+                                var client = new UdpClient(listenEndpoint)
+                                {
+                                    EnableBroadcast = true
+                                };
+
+                                config
+                                    .JoinMulticastGroups
+                                    .ForEach(multicastAddressStr =>
+                                    {
+                                        var multicastAddress = IPAddress.Parse(multicastAddressStr);
+                                        client.JoinMulticastGroup(multicastAddress, listenEndpoint.Address);
+
+                                        Program.Log($"{listenEndpoint} joined multicast group {multicastAddressStr}");
+                                    });
+
+                                return client;
                             })
                             .ToList();
 

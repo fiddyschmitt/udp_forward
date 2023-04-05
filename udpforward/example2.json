@@ -1,0 +1,19 @@
+{
+	"Forwards": [
+		{
+			"Bidirectional": false,
+			"Listeners": [
+				"192.168.1.31:11000"
+			],
+			"JoinMulticastGroups": [
+				"239.0.0.1"
+			],
+			"Senders": [
+				{
+					"SenderFromAddress": "192.168.56.1:12000",
+					"Destinations": [ "192.168.56.120:13000" ]
+				}
+			]
+		}
+	]
+}
