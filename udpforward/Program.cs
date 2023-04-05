@@ -11,24 +11,27 @@ namespace udpforward
     internal class Program
     {
         const string PROGRAM_NAME = "udpforwarder";
-        const string VERSION = "1.2";
+        const string VERSION = "1.3";
 
         static void Main(string[] args)
         {
+            Log($"{PROGRAM_NAME} {VERSION}");
+
             /*
             var exampleCfg = new Config()
             {
                 Forwards = new List<ForwardCfg>() {
                     new ForwardCfg() {
-                        Listeners = new List<string>() { "127.0.0.1:11300" },
+                        Listeners = new List<string>() { "192.168.56.1:11000" },
+                        JoinMulticastGroups = new List<string>() {"239.0.0.1"},
                         Senders = new List<SenderCfg>()
                         {
                             new SenderCfg()
                             {
-                                SenderFromAddress = "192.168.56.1:11300",
+                                SenderFromAddress = "192.168.56.1:12000",
                                 Destinations = new List<string>()
                                 {
-                                    "192.168.56.120:11300"
+                                    "192.168.56.120:13000"
                                 }
                             }
                         }
@@ -37,6 +40,7 @@ namespace udpforward
             };
 
             var json = JsonConvert.SerializeObject(exampleCfg, Formatting.Indented);
+
             */
 
 

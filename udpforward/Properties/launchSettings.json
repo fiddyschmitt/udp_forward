@@ -2,7 +2,7 @@
   "profiles": {
     "udpforward": {
       "commandName": "Project",
-      "commandLineArgs": "--config \"example.json\""
+      "commandLineArgs": "--config \"example1.json\""
     }
   }
 }
