@@ -18,10 +18,14 @@ namespace udpforward.UDP
                             .Select(listenEndpointStr => IPEndPoint.Parse(listenEndpointStr))
                             .Select(listenEndpoint =>
                             {
-                                var client = new UdpClient(listenEndpoint)
+                                var client = new UdpClient()
                                 {
                                     EnableBroadcast = true
                                 };
+
+                                client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+                                client.Client.Bind(listenEndpoint);
 
                                 config
                                     .JoinMulticastGroups

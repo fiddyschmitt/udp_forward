@@ -22,10 +22,15 @@ namespace udpforward.UDP
             {
                 UsedExistingListener = false;
 
-                SendClient = new UdpClient(sendFrom)
+                SendClient = new UdpClient()
                 {
                     EnableBroadcast = true
                 };
+
+                SendClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+                SendClient.Client.Bind(sendFrom);
+
             }
             else
             {
