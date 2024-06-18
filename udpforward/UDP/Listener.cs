@@ -82,7 +82,7 @@ namespace udpforward.UDP
         }
 
         readonly List<UdpClient> Listeners;
-        readonly Dictionary<IPEndPoint, UdpClient> OriginToReceivedOn = new();
+        readonly Dictionary<IPEndPoint, UdpClient> OriginToReceivedOn = [];
         readonly List<Sender> Senders;
 
         public ForwardCfg Config { get; }
@@ -112,11 +112,7 @@ namespace udpforward.UDP
 
                                 var data = listener.Receive(ref remoteIpEndPoint);
 
-                                if (!OriginToReceivedOn.ContainsKey(remoteIpEndPoint))
-                                {
-                                    OriginToReceivedOn.Add(remoteIpEndPoint, listener);
-                                }
-
+                                OriginToReceivedOn.TryAdd(remoteIpEndPoint, listener);
                                 Senders
                                     .ForEach(sender =>
                                     {
