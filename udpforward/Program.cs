@@ -11,7 +11,7 @@ namespace udpforward
     internal class Program
     {
         const string PROGRAM_NAME = "udpforwarder";
-        const string VERSION = "1.3";
+        const string VERSION = "1.4.0";
 
         static void Main(string[] args)
         {
