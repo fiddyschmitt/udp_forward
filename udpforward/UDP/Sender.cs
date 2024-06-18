@@ -16,7 +16,7 @@ namespace udpforward.UDP
             var sendFrom = IPEndPoint.Parse(config.SenderFromAddress);
 
             var existingClient = listeners
-                                    .FirstOrDefault(listener => listener.Client.LocalEndPoint.Equals(sendFrom));
+                                    .FirstOrDefault(listener => listener.Client?.LocalEndPoint?.Equals(sendFrom) ?? false);
 
             if (existingClient == null)
             {
