@@ -14,7 +14,6 @@ namespace udpforward
         const string PROGRAM_NAME = "udpforward";
         const string VERSION = "1.4.0";
 
-        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Options))]
         static void Main(string[] args)
         {
             Log($"{PROGRAM_NAME} {VERSION}");
