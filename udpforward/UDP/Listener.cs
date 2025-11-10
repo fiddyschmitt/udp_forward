@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using udpforward.Configs;
+using udpforward.Utils;
 
 namespace udpforward.UDP
 {
@@ -99,6 +101,8 @@ namespace udpforward.UDP
 
         void StartListeners()
         {
+            var recentDatagrams = new MemoryCache(Guid.NewGuid().ToString());
+
             Listeners
                 .ForEach(listener =>
                 {
@@ -112,13 +116,21 @@ namespace udpforward.UDP
 
                                 var data = listener.Receive(ref remoteIpEndPoint);
 
-                                OriginToReceivedOn.TryAdd(remoteIpEndPoint, listener);
-                                Senders
-                                    .ForEach(sender =>
-                                    {
-                                        var receiveChain = $"{remoteIpEndPoint} -> {listener.Client.LocalEndPoint}";
-                                        sender.Send(receiveChain, listener, data);
-                                    });
+                                if (IsDuplicate(Config.DedupeWindowMilliseconds, recentDatagrams, data))
+                                {
+                                    var packetStr = $"[{remoteIpEndPoint}] -> [{listener.Client.LocalEndPoint}] [{data.Length:N0} bytes payload]";
+                                    Program.Log($"{DateTime.Now} {packetStr} Dropping duplicate packet.");
+                                }
+                                else
+                                {
+                                    OriginToReceivedOn.TryAdd(remoteIpEndPoint, listener);
+                                    Senders
+                                        .ForEach(sender =>
+                                        {
+                                            var receiveChain = $"{remoteIpEndPoint} -> {listener.Client.LocalEndPoint}";
+                                            sender.Send(receiveChain, listener, data);
+                                        });
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -131,6 +143,8 @@ namespace udpforward.UDP
 
         void ListenForResponses()
         {
+            var recentDatagrams = new MemoryCache(Guid.NewGuid().ToString());
+
             Senders
                 .ToList()
                 .Where(sender => !sender.UsedExistingListener)
@@ -157,7 +171,14 @@ namespace udpforward.UDP
                                     continue;
                                 }
 
-                                Listeners
+                                if (IsDuplicate(Config.DedupeWindowMilliseconds, recentDatagrams, data))
+                                {
+                                    var packetStr = $"[{remoteIpEndPoint}] -> [{sender.SendClient.Client.LocalEndPoint}] [{data.Length:N0} bytes payload]";
+                                    Program.Log($"{DateTime.Now} {packetStr} Dropping duplicate packet.");
+                                }
+                                else
+                                {
+                                    Listeners
                                     .ForEach(listener =>
                                     {
                                         var originsForListener = OriginToReceivedOn
@@ -173,6 +194,7 @@ namespace udpforward.UDP
                                                 listener.Send(data, data.Length, originEndpoint);
                                             });
                                     });
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -181,6 +203,21 @@ namespace udpforward.UDP
                         }
                     });
                 });
+        }
+
+        static bool IsDuplicate(int? dedupeWindowMilliseconds, MemoryCache recentDatagrams, byte[] payload)
+        {
+            if (dedupeWindowMilliseconds == null) return false;
+
+            var payloadHex = payload.ToHexString();
+            var isDuplicate = recentDatagrams.Contains(payloadHex);
+
+            if (!isDuplicate)
+            {
+                recentDatagrams.Set(payloadHex, new object(), DateTimeOffset.UtcNow.AddMilliseconds(dedupeWindowMilliseconds.Value));
+            }
+
+            return isDuplicate;
         }
     }
 }

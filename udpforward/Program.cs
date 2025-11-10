@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using udpforward.CLI;
 using udpforward.Configs;
@@ -12,8 +13,12 @@ namespace udpforward
     internal class Program
     {
         const string PROGRAM_NAME = "udpforward";
-        const string VERSION = "1.4.0";
+        const string VERSION = "1.5.0";
 
+        //Preserve classes to prevent them being trimmed on publish
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, "System.Configuration.ClientConfigurationHost", "System.Configuration.ConfigurationManager")]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, "System.Configuration.ClientConfigurationSystem", "System.Configuration.ConfigurationManager")]
+        [MethodImpl(MethodImplOptions.NoInlining)] // Prevent the JIT compiler from inlining this method
         static void Main(string[] args)
         {
             Log($"{PROGRAM_NAME} {VERSION}");

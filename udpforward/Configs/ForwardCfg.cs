@@ -13,5 +13,7 @@ namespace udpforward.Configs
         public List<SenderCfg> Senders { get; set; } = new();
 
         public bool Bidirectional = false;
+
+        public int? DedupeWindowMilliseconds { get; set; } = null;
     }
 }
