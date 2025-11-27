@@ -119,7 +119,7 @@ namespace udpforward.UDP
                                 if (IsDuplicate(Config.DedupeWindowMilliseconds, recentDatagrams, data))
                                 {
                                     var packetStr = $"[{remoteIpEndPoint}] -> [{listener.Client.LocalEndPoint}] [{data.Length:N0} bytes payload]";
-                                    Program.Log($"{DateTime.Now} {packetStr} Dropping duplicate packet.");
+                                    Program.Log($"{packetStr} Dropping duplicate packet.");
                                 }
                                 else
                                 {
@@ -174,7 +174,7 @@ namespace udpforward.UDP
                                 if (IsDuplicate(Config.DedupeWindowMilliseconds, recentDatagrams, data))
                                 {
                                     var packetStr = $"[{remoteIpEndPoint}] -> [{sender.SendClient.Client.LocalEndPoint}] [{data.Length:N0} bytes payload]";
-                                    Program.Log($"{DateTime.Now} {packetStr} Dropping duplicate packet.");
+                                    Program.Log($"{packetStr} Dropping duplicate packet.");
                                 }
                                 else
                                 {
