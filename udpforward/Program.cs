@@ -13,7 +13,7 @@ namespace udpforward
     internal class Program
     {
         const string PROGRAM_NAME = "udpforward";
-        const string VERSION = "1.5.0";
+        const string VERSION = "1.5.1";
 
         //Preserve classes to prevent them being trimmed on publish
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, "System.Configuration.ClientConfigurationHost", "System.Configuration.ConfigurationManager")]
